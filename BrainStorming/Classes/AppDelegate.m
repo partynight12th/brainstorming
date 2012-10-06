@@ -107,6 +107,8 @@
     self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
     
+    [NSClassFromString(@"WebView") performSelector:@selector(_enableRemoteInspector)];
+    
     return YES;
 }
 

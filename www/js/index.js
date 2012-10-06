@@ -1,49 +1,54 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-var app = {
-    // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // `load`, `deviceready`, `offline`, and `online`.
-    bindEvents: function() {
-		document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
-    // deviceready Event Handler
-    //
-    // The scope of `this` is the event. In order to call the `receivedEvent`
-    // function, we must explicity call `app.receivedEvent(...);`
-    onDeviceReady: function() {
-        app.receivedEvent('deviceready');
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
-    }
+var app ={
+	w: window,
+	d: document,
+	Category: function(arg_id, arg_color){
+		this.id = arg_id;
+		this.color = arg_color;
+	},
+	categoryFactory: {
+		hash: [],
+		idMax: 5,
+		create: function(){
+			var catId = this.getUnuseId();
+			if(catId >= 0){
+				var catColor = this.createColor();
+				console.log("color: " + catColor);
+				var cat = new app.Category(catId, catColor);
+				this.hash[catId.toString()] = cat;
+				return cat;
+			}
+			return null;
+		},
+		getUnuseId: function(){
+			for(var i = 0; i < this.idMax; i++){
+				if(typeof this.hash[i.toString()] === "undefined"){
+					return i;
+				}
+			}
+			return -1;
+		},
+		removeId: function(){
+		},
+		createColor: function(){
+			var r = Math.floor(Math.random() * 255);
+			var g = Math.floor(Math.random() * 255);
+			var b = Math.floor(Math.random() * 255);
+			return "#" + r.toString(16) + g.toString(16) + b.toString(16);
+		}
+	},
 };
+
+$(function(){
+	var ideabtn = $("<div>").attr("id", "ideabtn").text("idea");
+	$("#rightmenu").html(ideabtn);
+
+	$(app.d).on("click", "#ideabtn", function(){
+		var category = app.categoryFactory.create();
+		if(category != null){
+			var li = $("<li>").addClass("cat"+ category.id).addClass("ideaitem").css({
+				backgroundColor: category.color
+			}).text("test");
+			$("#idealist").append(li)
+		}
+	});
+});
